@@ -7,15 +7,35 @@
 
 import SwiftUI
 
+enum SidebarSelection: Hashable {
+    case section(TransactionSection)
+    case group(TransactionGroup)
+}
+
 struct ContentView: View {
+    
+    @State private var userCreatedGroups: [TransactionGroup] = TransactionGroup.examples()
+    @State private var selection: SidebarSelection = .section(TransactionSection.allCases.first!)
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationSplitView {
+            SidebarView(userCreatedGroups: userCreatedGroups, selection: $selection)
+        } detail: {
+            switch selection {
+            case .section(let section):
+                switch section{
+                    case .thisMonth:
+                        TransactionListView(title: "This Month", transactions: Transaction.examples())
+                case .thisYear:
+                    TransactionListView(title: "This Year", transactions: Transaction.examples())
+                case .list:
+                    TransactionListView(title: "All Transactions", transactions: Transaction.examples())
+                }
+            case .group(let group):
+                TransactionListView(title: group.title, transactions: group.transactions)
+                    
+            }
         }
-        .padding()
     }
 }
 

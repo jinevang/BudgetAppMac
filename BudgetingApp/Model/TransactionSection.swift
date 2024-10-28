@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TaskSection: Identifiable {
+enum TransactionSection: Identifiable, CaseIterable, Hashable {
     case thisMonth
     case thisYear
     case list(TransactionGroup)
@@ -26,5 +26,13 @@ enum TaskSection: Identifiable {
         case .thisYear: return "This Year"
         case .list: return "List"
         }
+    }
+    
+    static var allCases: [TransactionSection] {
+        [.thisYear, .thisMonth]
+    }
+    
+    static func == (lhs: TransactionSection, rhs: TransactionSection) -> Bool {
+        lhs.id == rhs.id
     }
 }
